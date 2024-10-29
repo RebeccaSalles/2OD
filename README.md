@@ -1,5 +1,4 @@
-# 2OD
-### Online Distributed Outlier Detection (2OD)
+# <img src="2OD_logo.png" width="12%" /> : Online Distributed Outlier Detection (2OD)
 
 **Rebecca Salles, Benoit Lange, Reza Akbarinia, Eduardo Ogasawara, Esther Pacitti, Florent Masseglia**
 

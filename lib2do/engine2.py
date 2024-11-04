@@ -84,12 +84,6 @@ def getConfusionMatrix(Y_ANOMALY, y_train_pred):
     return tn, fp, fn, tp
 
 
-# def analyseAnomalies(Y_ANOMALY, y_train_scores):
-#    aucroc = roc_auc_score(y_true=Y_ANOMALY, y_score=y_train_scores)
-#    aucpr = average_precision_score(y_true=Y_ANOMALY, y_score=y_train_scores, pos_label=1)
-#    prn = 0
-#    return aucroc, aucpr, prn
-
 
 def analyseAnomalies(Y_ANOMALY, y_train_scores):
     try:
@@ -238,12 +232,6 @@ def executeXP2(param, X_VALUES, Y_ANOMALY, node):
     counter = np.zeros([X_VALUES.shape[0]], dtype=float)
     tif = time.time()
     resultsOfSubwindow = []
-    #    sparkDF = sc.sparkContext.parallelize(X_train_online, X_train_online.shape[0])
-    #    result = (sparkDF.mapPartitionsWithIndex(
-    #        lambda index, iterator: computeXP4(index, iterator, param))
-    #              .collect())
-    #    print("result: ", result.shape)
-    #    for v in result:
     i = 0
     for subWindow in X_train_online:
         fit_time, time_pred, time_df, y_train_pred, y_train_scores, y_train_scores2 = execute(param, subWindow[0])
@@ -269,8 +257,6 @@ def executeXP2(param, X_VALUES, Y_ANOMALY, node):
         endSub = X_VALUES.shape[0] - y_train_pred.shape[0] - startSub
         startZeroSub = np.zeros(startSub, dtype=float)
         endZeroSub = np.zeros(endSub, dtype=float)
-        #        startZeroSub[:] = np.nan
-        #        endZeroSub[:] = np.nan
 
         local_to_global_score = np.concatenate((startZeroSub, y_train_scores, endZeroSub),
                                                axis=None)
@@ -292,9 +278,7 @@ def executeXP2(param, X_VALUES, Y_ANOMALY, node):
         counter = counter + local_to_global_one
 
         resultsOfSubwindow.append(res)
-        #        g_y_train_pred.append(y_train_pred)
-        #        g_y_train_scores.append(y_train_scores)
-        #        g_y_train_scores2.append(y_train_scores2)
+
 
         acc_fit_time += fit_time
         acc_pred_time += time_pred
@@ -345,7 +329,6 @@ def executeXP3(param, X_VALUES, Y_ANOMALY, window_size, node):
           .config("spark.driver.memory", "64g")
           .config("spark.executor.memoryOverhead", "64g")
           .config("spark.driver.memoryOverhead", "64g")
-          #          .master("local")
           .getOrCreate())
 
     window_size = int(window_size)
@@ -462,8 +445,6 @@ def executeXP3(param, X_VALUES, Y_ANOMALY, window_size, node):
         endSub = X_VALUES.shape[0] - sub_a_train_pred.shape[0] - startSub
         startZeroSub = np.zeros(startSub, dtype=float)
         endZeroSub = np.zeros(endSub, dtype=float)
-        #        startZeroSub[:] = np.nan
-        #        endZeroSub[:] = np.nan
 
         a_local_to_global_score = np.concatenate((startZeroSub, sub_a_train_scores, endZeroSub),
                                                  axis=None)
@@ -562,12 +543,7 @@ def executeXP3a(param, X_VALUES, Y_ANOMALY, node):
     counter = np.zeros([X_VALUES.shape[0]], dtype=float)
     tif = time.time()
     resultsOfSubwindow = []
-    #    sparkDF = sc.sparkContext.parallelize(X_train_online, X_train_online.shape[0])
-    #    result = (sparkDF.mapPartitionsWithIndex(
-    #        lambda index, iterator: computeXP4(index, iterator, param))
-    #              .collect())
-    #    print("result: ", result.shape)
-    #    for v in result:
+
     i = 0
     for subWindow in X_train_online:
         fit_time, time_pred, time_df, y_train_pred, y_train_scores, y_train_scores2 = execute(param, subWindow[0])
@@ -593,8 +569,6 @@ def executeXP3a(param, X_VALUES, Y_ANOMALY, node):
         endSub = X_VALUES.shape[0] - y_train_pred.shape[0] - startSub
         startZeroSub = np.zeros(startSub, dtype=float)
         endZeroSub = np.zeros(endSub, dtype=float)
-        #        startZeroSub[:] = np.nan
-        #        endZeroSub[:] = np.nan
 
         local_to_global_score = np.concatenate((startZeroSub, y_train_scores, endZeroSub),
                                                axis=None)
@@ -616,9 +590,6 @@ def executeXP3a(param, X_VALUES, Y_ANOMALY, node):
         counter = counter + local_to_global_one
 
         resultsOfSubwindow.append(res)
-        #        g_y_train_pred.append(y_train_pred)
-        #        g_y_train_scores.append(y_train_scores)
-        #        g_y_train_scores2.append(y_train_scores2)
 
         acc_fit_time += fit_time
         acc_pred_time += time_pred
@@ -674,7 +645,6 @@ def executeXP3a(param, X_VALUES, Y_ANOMALY, node):
           .config("spark.driver.memory", "64g")
           .config("spark.executor.memoryOverhead", "64g")
           .config("spark.driver.memoryOverhead", "64g")
-          #          .master("local")
           .getOrCreate())
 
     tfw = time.time()
@@ -695,18 +665,12 @@ def executeXP3a(param, X_VALUES, Y_ANOMALY, node):
     counter = np.zeros([X_VALUES.shape[0]], dtype=float)
     tif = time.time()
     resultsOfSubwindow = []
-    #    g_y_train_pred = []
-    #    g_y_train_scores = []
-    #    g_y_train_scores2 = []
-    #    print("window_size: ", window_size)
-    #    print("node: ", node)
-    #    print("X_VALUES: ", X_VALUES.shape)
-    #    print("X_train_online: ", X_train_online.shape)
+
     sparkDF = sc.sparkContext.parallelize(X_train_online, X_train_online.shape[0])
     result = (sparkDF.mapPartitionsWithIndex(
         lambda index, iterator: computeXP4(index, iterator, param))
               .collect())
-    #    print("result: ", result.shape)
+
     for v in result:
         i = v[0]
         fit_time = v[1]
@@ -737,8 +701,6 @@ def executeXP3a(param, X_VALUES, Y_ANOMALY, node):
         endSub = X_VALUES.shape[0] - y_train_pred.shape[0] - startSub
         startZeroSub = np.zeros(startSub, dtype=float)
         endZeroSub = np.zeros(endSub, dtype=float)
-        #        startZeroSub[:] = np.nan
-        #        endZeroSub[:] = np.nan
 
         local_to_global_score = np.concatenate((startZeroSub, y_train_scores, endZeroSub),
                                                axis=None)
@@ -760,9 +722,7 @@ def executeXP3a(param, X_VALUES, Y_ANOMALY, node):
         counter = counter + local_to_global_one
 
         resultsOfSubwindow.append(res)
-        #        g_y_train_pred.append(y_train_pred)
-        #        g_y_train_scores.append(y_train_scores)
-        #        g_y_train_scores2.append(y_train_scores2)
+
 
         acc_fit_time += fit_time
         acc_pred_time += time_pred
@@ -958,7 +918,6 @@ def computeSlice(x, nodeG, node):
         ws = n
     step = int(ws / 2)
     v = sliding_window_view(x, ws, axis=0)[::step, :]
-    #    print("ws = ", ws, step, node, nodeG, v.shape[0])
     if (v.shape[0] > nodeG):
         return computeSlice(x, nodeG, node - 1)
     else:
@@ -981,7 +940,6 @@ def executeXP5(model, X_VALUES, Y_ANOMALY, nbElements, node):
           .config("spark.executor.memoryOverhead", "64g")
           .config("spark.driver.memoryOverhead", "64g")
             .config("spark.rpc.message.maxSize", "2000")
-#          .master("local")
           .getOrCreate())
 
     tiw = time.time()
